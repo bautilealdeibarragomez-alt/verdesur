@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VerdeSur – Alarma de heladas para chacras de fruta fina</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+<style>
+:root{
+  --verde:#2f8f1a; --azul:#1e88e5; --fondo:#f6faf4; --superficie:#ffffff;
+  --texto:#1d2b1a; --suave:#51604d; --borde:#d9e6d4; --alerta:#c62828;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --verde:#5cc43f; --azul:#64b5f6; --fondo:#0f1a0d; --superficie:#172415;
+    --texto:#e8f2e4; --suave:#a9b9a4; --borde:#2a3d26; --alerta:#ef5350;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--fondo);color:var(--texto);line-height:1.6}
+.contenedor{max-width:1000px;margin:0 auto;padding:0 20px}
+img,svg{max-width:100%}
+
+/* Encabezado y navegación */
+header.sitio{background:var(--superficie);border-bottom:1px solid var(--borde)}
+header.sitio .contenedor{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding-top:12px;padding-bottom:12px}
+.marca{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.4rem;text-decoration:none;color:var(--verde)}
+.marca span{color:var(--azul)}
+.marca svg{width:44px;height:44px}
+nav ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px}
+nav a{color:var(--texto);text-decoration:none;font-weight:600;padding:4px 2px;border-bottom:2px solid transparent}
+nav a:hover{border-color:var(--azul)}
+
+/* Hero */
+.hero{text-align:center;padding:56px 0 48px;background:linear-gradient(180deg,var(--superficie),var(--fondo))}
+.hero svg.logo{width:min(220px,60%);height:auto}
+.hero h1{font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.15;margin:16px 0 12px}
+.hero p{max-width:640px;margin:0 auto 24px;color:var(--suave);font-size:1.1rem}
+.boton{display:inline-block;background:var(--verde);color:#fff;padding:12px 26px;border-radius:999px;font-weight:700;text-decoration:none}
+.boton:hover{filter:brightness(1.1)}
+.boton.sec{background:transparent;color:var(--azul);border:2px solid var(--azul);margin-left:8px}
+
+section{padding:44px 0}
+section h2{font-size:1.7rem;margin:0 0 8px;color:var(--verde)}
+section>.contenedor>p.intro{color:var(--suave);max-width:680px;margin-top:0}
+.grilla{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:20px}
+.tarjeta{background:var(--superficie);border:1px solid var(--borde);border-radius:14px;padding:18px}
+.tarjeta h3{margin:0 0 6px;font-size:1.1rem}
+.tarjeta p{margin:0;color:var(--suave)}
+.problema .tarjeta{border-left:5px solid var(--alerta)}
+.solucion .tarjeta{border-left:5px solid var(--verde)}
+
+/* Tabla */
+.tabla-wrap{overflow-x:auto;margin-top:20px}
+table{border-collapse:collapse;width:100%;min-width:520px;background:var(--superficie)}
+th,td{border:1px solid var(--borde);padding:10px 12px;text-align:left}
+th{background:var(--verde);color:#fff}
+
+/* Pasos */
+ol.pasos{counter-reset:p;list-style:none;padding:0;margin:20px 0 0;display:grid;gap:12px}
+ol.pasos li{counter-increment:p;background:var(--superficie);border:1px solid var(--borde);border-radius:12px;padding:14px 14px 14px 60px;position:relative}
+ol.pasos li::before{content:counter(p);position:absolute;left:14px;top:12px;width:32px;height:32px;border-radius:50%;background:var(--azul);color:#fff;font-weight:700;display:grid;place-items:center}
+
+/* Consola */
+pre.consola{background:#101810;color:#9be57f;padding:16px;border-radius:12px;overflow-x:auto;font-size:.9rem}
+pre.consola .peligro{color:#ff7961}
+
+/* Formulario */
+form{display:grid;gap:12px;max-width:520px;margin-top:16px}
+label{font-weight:600}
+input,textarea{width:100%;padding:10px;border:1px solid var(--borde);border-radius:8px;background:var(--superficie);color:var(--texto);font:inherit}
+
+footer{background:var(--superficie);border-top:1px solid var(--borde);text-align:center;padding:24px 0;color:var(--suave);font-size:.9rem}
+</style>
+</head>
+<body>
+
+<!-- Símbolo reutilizable del logo -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="isologo" viewBox="0 0 200 200">
+    <circle cx="100" cy="100" r="92" fill="none" stroke="#2f8f1a" stroke-width="10"/>
+    <path d="M50 150 C40 80 90 40 150 32 C162 90 130 140 50 150 Z" fill="#2f8f1a"/>
+    <path d="M97 62 L113 98 A17 17 0 1 1 81 98 Z" fill="#1e88e5"/>
+  </symbol>
+</svg>
+
+<header class="sitio">
+  <div class="contenedor">
+    <a class="marca" href="#inicio" aria-label="VerdeSur, inicio">
+      <svg role="img" aria-hidden="true"><use href="#isologo"/></svg>
+      Verde<span>Sur</span>
+    </a>
+    <nav aria-label="Navegación principal">
+      <ul>
+        <li><a href="#problema">Problema</a></li>
+        <li><a href="#solucion">Solución</a></li>
+        <li><a href="#dispositivo">Dispositivo</a></li>
+        <li><a href="#funcionamiento">Cómo funciona</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="inicio">
+  <section class="hero">
+    <div class="contenedor">
+      <svg class="logo" viewBox="0 0 200 200" role="img" aria-label="Logo de VerdeSur: una hoja verde con una gota azul dentro de un círculo"><use href="#isologo"/></svg>
+      <h1>Una helada no avisa. <br>VerdeSur sí.</h1>
+      <p>Alarma de heladas para chacras de fruta fina de la Patagonia: mide la temperatura y la luz de tu cultivo y te avisa antes de que el frío arruine la cosecha.</p>
+      <a class="boton" href="#contacto">Quiero mi VerdeSur</a>
+      <a class="boton sec" href="#dispositivo">Ver el dispositivo</a>
+    </div>
+  </section>
+
+  <section id="problema" class="problema">
+    <div class="contenedor">
+      <h2>El problema</h2>
+      <p class="intro">En la Patagonia las heladas tardías y repentinas pueden llegar cuando el cultivo ya está en floración o fructificación. Muchas veces el productor se entera a la mañana siguiente, cuando el daño ya está hecho.</p>
+      <div class="grilla">
+        <article class="tarjeta"><h3>❄️ Heladas imprevistas</h3><p>La temperatura puede caer bajo cero en pocas horas, sobre todo en noches despejadas.</p></article>
+        <article class="tarjeta"><h3>🍓 Fruta fina sensible</h3><p>Frutillas, frambuesas, cerezas y similares pierden flores y frutos con el frío.</p></article>
+        <article class="tarjeta"><h3>😴 Nadie vigila de noche</h3><p>Revisar el termómetro cada hora no es realista. Se necesita un aviso automático.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="solucion" class="solucion">
+    <div class="contenedor">
+      <h2>La solución</h2>
+      <p class="intro">VerdeSur es un prototipo de alarma de bajo costo basado en Arduino UNO. Lee sensores todo el tiempo y, si la temperatura entra en zona de riesgo, activa una alarma luminosa para que puedas actuar a tiempo.</p>
+      <div class="grilla">
+        <article class="tarjeta"><h3>🌡️ Mide la temperatura</h3><p>Sensor BMP280 que lee el frío real del cultivo.</p></article>
+        <article class="tarjeta"><h3>☀️ Mide la luz</h3><p>Sensor LDR para saber si es de día o de noche y detectar cuándo sale el sol.</p></article>
+        <article class="tarjeta"><h3>🚨 Avisa al instante</h3><p>El LED rojo parpadea más rápido cuanto mayor es el peligro.</p></article>
+        <article class="tarjeta"><h3>💻 Monitoreo en la PC</h3><p>Los datos llegan por USB al monitor serie de la computadora de la casa.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="dispositivo">
+    <div class="contenedor">
+      <h2>El dispositivo</h2>
+      <p class="intro">Cada componente tiene una función clara y se conecta a la placa Arduino UNO como se detalla a continuación.</p>
+      <figure style="margin:0">
+        <div class="tabla-wrap">
+          <table>
+            <caption style="text-align:left;padding:8px 0;color:var(--suave)">Conexionado del prototipo</caption>
+            <thead><tr><th scope="col">Componente</th><th scope="col">Función</th><th scope="col">Pin Arduino</th></tr></thead>
+            <tbody>
+              <tr><th scope="row" style="background:var(--borde);color:var(--texto)">BMP280</th><td>Temperatura (bus I2C)</td><td>A4 (SDA), A5 (SCL), 3.3V, GND</td></tr>
+              <tr><th scope="row" style="background:var(--borde);color:var(--texto)">LDR</th><td>Intensidad de luz (divisor de tensión con resistencia de 10 kΩ)</td><td>A0, 5V</td></tr>
+              <tr><th scope="row" style="background:var(--borde);color:var(--texto)">Resistencia 10 kΩ</th><td>Completa el divisor de tensión del LDR</td><td>A0 y GND</td></tr>
+              <tr><th scope="row" style="background:var(--borde);color:var(--texto)">LED rojo + 220 Ω</th><td>Alarma visual: parpadea más rápido cuanto mayor es el riesgo</td><td>D9 y GND</td></tr>
+              <tr><th scope="row" style="background:var(--borde);color:var(--texto)">Cable USB</th><td>Alimentación y envío de datos a la PC</td><td>Puerto USB</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption style="color:var(--suave);margin-top:8px;font-size:.9rem">Rojo: 5V · Negro: GND · Verde: dato digital · Azul: bus I2C · Naranja: salidas de alarma.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="funcionamiento">
+    <div class="contenedor">
+      <h2>Cómo funciona</h2>
+      <ol class="pasos">
+        <li><strong>Lee.</strong> El Arduino consulta el sensor de temperatura y el de luz de forma continua.</li>
+        <li><strong>Decide.</strong> Con condicionales (if/else) compara la temperatura con los umbrales de precaución y de peligro, y mira si es de noche o ya hay sol.</li>
+        <li><strong>Avisa.</strong> Si hay riesgo, hace parpadear el LED rojo (más rápido cuanto más peligro) y lo informa en pantalla.</li>
+        <li><strong>Registra.</strong> Cada lectura aparece en el monitor serie de la PC con un formato claro.</li>
+      </ol>
+      <h3 style="margin-top:28px">Así se ve en la consola</h3>
+      <pre class="consola" aria-label="Ejemplo de salida del monitor serie">[OK] Temp: 8.5°C | Luz: 74% (DIA) | Sin riesgo -> Alarma apagada
+[<span class="peligro">ALERTA HELADA</span>] Temp: -5.0°C | Luz: 12% (NOCHE) | Riesgo para los brotes: PELIGRO -> Activando Alarma</pre>
+    </div>
+  </section>
+
+  <section id="contacto">
+    <div class="contenedor">
+      <h2>Protegé tu cosecha</h2>
+      <p class="intro">Dejanos tus datos y te contamos cómo incorporar VerdeSur a tu chacra.</p>
+      <form action="#" method="post" onsubmit="event.preventDefault();this.querySelector('output').textContent='¡Gracias! Te vamos a contactar pronto.';">
+        <div><label for="nombre">Nombre</label><input id="nombre" name="nombre" type="text" required></div>
+        <div><label for="email">Correo electrónico</label><input id="email" name="email" type="email" required></div>
+        <div><label for="msg">¿Qué cultivo tenés?</label><textarea id="msg" name="msg" rows="3"></textarea></div>
+        <button class="boton" type="submit" style="border:0;cursor:pointer;font:inherit;font-weight:700">Enviar consulta</button>
+        <output aria-live="polite" style="color:var(--verde);font-weight:600"></output>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="contenedor">
+    <p>© 2026 VerdeSur · Prevención de heladas en chacras de fruta fina · Patagonia, Argentina</p>
+    <p>Proyecto integrador de tecnología (prototipo educativo).</p>
+  </div>
+</footer>
+
+</body>
+</html>
